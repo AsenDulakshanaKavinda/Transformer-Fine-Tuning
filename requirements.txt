@@ -1,0 +1,11 @@
+zenml[server]
+transformers 
+datasets 
+torch 
+mlflow 
+evidently 
+fastapi 
+uvicorn
+
+
+

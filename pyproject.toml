@@ -1,0 +1,17 @@
+[project]
+name = "transformer-fine-tuning"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "datasets>=4.4.1",
+    "evidently>=0.7.15",
+    "fastapi>=0.115.8",
+    "ipykernel>=7.1.0",
+    "mlflow>=3.5.1",
+    "torch>=2.9.0",
+    "transformers>=4.57.1",
+    "uvicorn>=0.38.0",
+    "zenml[server]>=0.91.0",
+]
