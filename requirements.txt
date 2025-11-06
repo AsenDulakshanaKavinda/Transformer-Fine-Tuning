@@ -6,6 +6,6 @@ mlflow
 evidently 
 fastapi 
 uvicorn
-
+pytest
 
 
