@@ -1,0 +1,33 @@
+project:
+  name: transformer-fine-tuning
+  version: "1.0.0"
+  seed: 42
+
+model:
+  name: bert-base-uncased
+  type: encoder
+  num_labels: 2
+  dropout: 0.3
+
+training:
+  batch_size: 16
+  epochs: 5
+  learning_rate: 2e-5
+  weight_decay: 0.01
+  optimizer: AdamW
+  scheduler: linear
+
+data:
+  train_path: data/train.csv
+  valid_path: data/valid.csv
+  test_path: data/test.csv
+  max_length: 256
+
+logging:
+  save_dir: outputs/logs
+  log_interval: 50
+  save_checkpoints: true
+
+device:
+  use_gpu: true
+  gpu_id: 0
