@@ -26,10 +26,13 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       # Optional: Use uv if you’re using it instead of pip
-      - name:  Install dependencies with uv
+      - name: ⚡ Install dependencies with uv
         run: |
-          pip install uv
-          uv pip install -r requirements.txt
+            pip install uv
+            uv venv  # ✅ create virtual environment
+            source .venv/bin/activate
+            uv pip install -r requirements.txt
+
 
       # or use pip instead:
       # - name:  Install dependencies
