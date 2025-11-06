@@ -1,0 +1,49 @@
+name: 🧠 Transformer Fine-Tuning CI/CD
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [ "3.10", "3.11" ]
+
+    steps:
+      # Checkout your code
+      - name:  Checkout repository
+        uses: actions/checkout@v4
+
+      # Set up Python
+      - name:  Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # Optional: Use uv if you’re using it instead of pip
+      - name:  Install dependencies with uv
+        run: |
+          pip install uv
+          uv pip install -r requirements.txt
+
+      # or use pip instead:
+      # - name:  Install dependencies
+      #   run: pip install -r requirements.txt
+
+      # Run pytest
+      - name:  Run tests
+        run: |
+          pytest finetune/tests -v --maxfail=1 --disable-warnings
+
+      # (Optional) Upload test results or coverage
+      - name: 📊 Upload coverage report
+        if: success()
+        run: |
+          pip install coverage
+          coverage run -m pytest finetune/tests
+          coverage report -m
