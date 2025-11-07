@@ -1,7 +1,7 @@
 import pytest
 import os
 from unittest.mock import patch, MagicMock
-from finetune.src.utils.text_classification.model_loader import Model_Loader
+from src.utils.text_classification.model_loader import Model_Loader
 
 @pytest.fixture
 def setup_env(tmp_path):
