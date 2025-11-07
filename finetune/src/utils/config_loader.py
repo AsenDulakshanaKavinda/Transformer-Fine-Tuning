@@ -5,7 +5,7 @@ import yaml
 def _project_root() -> Path:
     # E:\Project\Transformer-Fine-Tuning\finetune\src\utils\config_loader.py
     # project root - Transformer-Fine-Tuning
-    return Path(__file__).resolve().parents[3]
+    return Path(__file__).resolve().parents[2]
 
 def load_config(config_path: str | None = None) -> dict:
     # get env from env variables
@@ -13,7 +13,8 @@ def load_config(config_path: str | None = None) -> dict:
 
     # if there is not env_path
     if config_path is None:
-        config_path = env_path or str(_project_root() / "finetune" / "src" / "config" / "config.yaml")
+        config_path = env_path or str(_project_root() / "src" / "config" / "config.yaml")
+
 
     path = Path(config_path)
     if not path.absolute():

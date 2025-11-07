@@ -2,12 +2,12 @@
 import os
 import sys
 import json
+from pathlib import Path
 from dotenv import load_dotenv
+from finetune.src.logger import logging as log
+from finetune.src.exception import ProjectException
 
-from src.logger import logging as log
-from src.exception import ProjectException
-
-from src.utils.config_loader import load_config
+from finetune.src.utils.config_loader import load_config
 
 from datasets import load_dataset
 from transformers import BertTokenizer, BertTokenizerFast, BertForSequenceClassification
@@ -15,7 +15,8 @@ from transformers import BertTokenizer, BertTokenizerFast, BertForSequenceClassi
 load_dotenv()
 
 class ApiKeyManager:
-    REQUIRED_KEYS = [""]
+    REQUIRED_KEYS = ["TEST_KEY"]
+    log.info(f"{REQUIRED_KEYS}")
 
     def __init__(self):
         # if env has individual API key
@@ -52,9 +53,10 @@ class ApiKeyManager:
 class Model_Loader:
 
     def __init__(self):
+
+        env = os.getenv("ENV", "local").lower()
         
-        if os.getenv("ENV", "local").lower() != "production":
-            load_dotenv()
+        if env != "production":
             log.info("RUNNING IN LOCAL MODE: .env loaded")
         else:
             log.info("RUNNING IN PRODUCTION MODE!!!")
@@ -63,28 +65,69 @@ class Model_Loader:
         self.config = load_config()
         log.info(f"YAML CONFIG LOADED, config_keys={list(self.config.keys())}")
 
-
-
-    def load_llm(self):
-
+    def _get_model_config(self):
         model_block = self.config["model"]
         model_type = os.getenv("MODEL_TYPE", "encoder_only")
+
 
         if model_type not in model_block:
             log.error(f"Model type not found in config model = {model_type}")
             raise ProjectException(f"Model type '{model_type}' not found in the config")
+        
+        return model_type, model_block[model_type]
 
-        model_config = model_block[model_type]
-        # model = model_config.get("model")
+
+    def load_model(self):
+
+        model_type, model_config = self._get_model_config()
         model_name = model_config.get("model_name")
         num_labels = model_config.get("num_labels", 2)
+        model_dir = Path(os.getenv("MODEL_DIR", model_config.get("model_dir", "./artifacts/model")))
 
-        if model_type == "encoder_only":
-            return BertForSequenceClassification.from_pretrained(
-                pretrained_model_name_or_path = model_name,
-                num_labels = num_labels
-            )
-        else:
+        if model_type != "encoder_only":
             log.error(f"Unsupported model type, model type = {model_type}")
-            ProjectException(f"Unsupported model type, {model_type}", sys)
+            raise ProjectException(f"Unsupported model type, {model_type}", sys)
+        
+        model_dir.mkdir(parents=True, exist_ok=True)
 
+        pretrained_model_path = model_dir
+
+        # If directory is empty, download and save
+        if not os.listdir(model_dir):
+            log.info(f"Local model directory empty, Downloading {model_name}...")
+            model = BertForSequenceClassification.from_pretrained(model_name, num_labels=num_labels)
+            model.save_pretrained(pretrained_model_path)
+            log.info(f"Model saved to {model_dir}")
+        else:
+            log.info(F"Loading model from lacal directory: {pretrained_model_path}")
+            model = BertForSequenceClassification.from_pretrained(pretrained_model_path, num_labels=num_labels)
+
+        return model
+
+    def load_tokenizer(self):
+        model_type, model_config = self._get_model_config()
+        tokenizer_name = model_config.get("tokenizer_name")
+        tokenizer_dir = Path(os.getenv("TOKENIZER_DIR", model_config.get("model_dir", "./artifacts/tokenizer")))
+
+        if model_type != "encoder_only":
+            log.error(f"Unsupported model type, model type = {model_type}")
+            raise ProjectException(f"Unsupported model type, {model_type}", sys)
+        
+        tokenizer_dir.mkdir(parents=True, exist_ok=True)
+
+        pretrained_tokenizer_path = tokenizer_dir
+
+        # If directory is empty, download and save
+        if not os.listdir(tokenizer_dir):
+            log.info(f"Local model directory empty, Downloading {tokenizer_name}...")
+            tokenizer = BertTokenizerFast.from_pretrained(tokenizer_name)
+            tokenizer.save_pretrained(pretrained_tokenizer_path)
+            log.info(f"Model saved to {pretrained_tokenizer_path}")
+        else:
+            log.info(F"Loading model from lacal directory: {pretrained_tokenizer_path}")
+            tokenizer = BertTokenizerFast.from_pretrained(pretrained_tokenizer_path)
+
+        return tokenizer
+# fine-tune and want to reuse that model later
+# model.save_pretrained("./artifacts/model/")
+# tokenizer.save_pretrained("./artifacts/tokenizer/")

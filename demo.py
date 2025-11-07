@@ -2,12 +2,16 @@
 
 
 
-from finetune.src.logger import test
-from finetune.src.exception import test as textExp
-
-textExp()
 
 
+# from finetune.src.utils.config_loader import test
+from finetune.src.utils.text_classification.model_loader import Model_Loader, ApiKeyManager
+
+def test():
+    api = ApiKeyManager()
+    ml = Model_Loader()
+    ml.load_tokenizer()
 
 
+test()
 

@@ -3,13 +3,14 @@ project:
   version: "1.0.0"
   seed: 42
 
+
 model:
   encoder_only:
-    model_type: "encoder_only"
-    num_labels: 2
     model_name: "bert-base-uncased"
-    tokenizer: "bert-base-uncased"
-
+    tokenizer_name: "bert-base-uncased"
+    num_labels: 2
+    model_dir: "./artifacts/model"
+    tokenizer_dir: "./artifacts/tokenizer"
 
 
 training:
