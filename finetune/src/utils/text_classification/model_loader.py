@@ -4,10 +4,10 @@ import sys
 import json
 from dotenv import load_dotenv
 
-from finetune.src.logger import logging as log
-from finetune.src.exception import ProjectException
+from src.logger import logging as log
+from src.exception import ProjectException
 
-from finetune.src.utils.config_loader import load_config
+from src.utils.config_loader import load_config
 
 from datasets import load_dataset
 from transformers import BertTokenizer, BertTokenizerFast, BertForSequenceClassification
