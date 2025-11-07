@@ -50,11 +50,15 @@ LOG_CONFIG = {
 # Apply config
 logging.config.dictConfig(LOG_CONFIG)
 
-if __name__ == "__main__":
-    # Example usage
+def test():
+        # Example usage
     app_logger = logging.getLogger("app")
     db_logger = logging.getLogger("db")
 
     for i in range(10):  # generate enough logs to force rotation
         app_logger.info(f"Processing request {i}")
         db_logger.error(f"Database error on request {i}")
+
+if __name__ == "__main__":
+    test()
+

@@ -1,17 +1,11 @@
-import os
-from finetune.src.utils.text_classification.model_loader import Model_Loader, ApiKeyManager
-
-
-api = ApiKeyManager()
-
-
-ml = Model_Loader()
-ml.load_llm()
 
 
 
 
+from finetune.src.logger import test
+from finetune.src.exception import test as textExp
 
+textExp()
 
 
 

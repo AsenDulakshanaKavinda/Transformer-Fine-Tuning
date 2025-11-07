@@ -17,10 +17,13 @@ class ProjectException(Exception):
 
     def __str__(self):
         return self.error_message
-
-if __name__ == "__main__":
+    
+def test():
     try:
         result = 10/0
     except Exception as e:
         ProjectException(error_message=str(e), error_details=sys)
+
+if __name__ == "__main__":
+    test()
 

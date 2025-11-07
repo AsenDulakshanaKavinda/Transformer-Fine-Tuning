@@ -7,5 +7,5 @@ evidently
 fastapi 
 uvicorn
 pytest
-
+from_root
 
