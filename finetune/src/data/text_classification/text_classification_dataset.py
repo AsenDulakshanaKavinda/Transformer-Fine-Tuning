@@ -4,7 +4,6 @@ from torch.utils.data import Dataset, Dataloader
 
 class TextClassificationDataset(Dataset):
 
-
     """
         custom PyTorch dataset that prepares text data and their labels to use with model
         - handle - tokenization, padding, truncating and return right tensor format
@@ -47,21 +46,4 @@ class TextClassificationDataset(Dataset):
         }
 
         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

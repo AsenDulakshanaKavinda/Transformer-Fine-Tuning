@@ -4,10 +4,13 @@ project:
   seed: 42
 
 model:
-  name: bert-base-uncased
-  type: encoder
-  num_labels: 2
-  dropout: 0.3
+  encoder_only:
+    model_type: "encoder_only"
+    num_labels: 2
+    model_name: "bert-base-uncased"
+    tokenizer: "bert-base-uncased"
+
+
 
 training:
   batch_size: 16
