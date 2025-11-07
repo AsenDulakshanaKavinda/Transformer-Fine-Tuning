@@ -119,15 +119,17 @@ class Model_Loader:
 
         # If directory is empty, download and save
         if not os.listdir(tokenizer_dir):
-            log.info(f"Local model directory empty, Downloading {tokenizer_name}...")
+            log.info(f"Local tokenizer directory empty, Downloading {tokenizer_name}...")
             tokenizer = BertTokenizerFast.from_pretrained(tokenizer_name)
             tokenizer.save_pretrained(pretrained_tokenizer_path)
-            log.info(f"Model saved to {pretrained_tokenizer_path}")
+            log.info(f"tokenizer saved to {pretrained_tokenizer_path}")
         else:
-            log.info(F"Loading model from lacal directory: {pretrained_tokenizer_path}")
+            log.info(F"Loading tokenizer from lacal directory: {pretrained_tokenizer_path}")
             tokenizer = BertTokenizerFast.from_pretrained(pretrained_tokenizer_path)
 
         return tokenizer
+    
+    
 # fine-tune and want to reuse that model later
 # model.save_pretrained("./artifacts/model/")
 # tokenizer.save_pretrained("./artifacts/tokenizer/")
