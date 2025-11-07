@@ -1,4 +1,4 @@
-name: 🧠 Transformer Fine-Tuning CI/CD
+name: CI - Model Loader Tests
 
 on:
   push:
@@ -7,43 +7,32 @@ on:
     branches: [ main, master ]
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        python-version: [ "3.11" ]
-
     steps:
-      # 1️⃣ Checkout your repository
-      - name: 📥 Checkout repository
-        uses: actions/checkout@v4
+    - name: ⬇️ Checkout repository
+      uses: actions/checkout@v4
 
-      # 2️⃣ Set up Python
-      - name: 🐍 Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
+    - name: 🧰 Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
 
-      # 3️⃣ Install uv and project dependencies
-      - name: ⚡ Install dependencies with uv
-        run: |
-          pip install uv
-          uv pip install --system -r requirements.txt
+    - name: ⚙️ Install dependencies
+      run: |
+        python -m venv .venv
+        source .venv/bin/activate
+        pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest
 
-      # 4️⃣ Install pytest for testing
-      - name: 🧪 Install test dependencies
-        run: uv pip install --system pytest pytest-cov
+    - name: 🧩 Create .env file
+      run: |
+        echo "ENV=local" >> .env
+        echo "MODEL_TYPE=encoder_only" >> .env
 
-      # 5️⃣ Run pytest with coverage
-      - name: 🧠 Run unit tests
-        run: |
-          pytest finetune/tests -v --maxfail=1 --disable-warnings --cov=finetune --cov-report=term-missing
-
-      # 6️⃣ (Optional) Upload coverage results
-      - name: 📊 Upload coverage report
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: ./.coverage
+    - name: 🧠 Run tests with pytest
+      run: |
+        source .venv/bin/activate
+        pytest -v --maxfail=1 --disable-warnings
