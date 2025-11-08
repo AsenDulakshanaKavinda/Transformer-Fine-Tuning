@@ -6,8 +6,8 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset
 
-from finetune.src.logger import logging as log
-from finetune.src.exception import ProjectException
+from bert.src.logger import logging as log
+from bert.src.exception import ProjectException
 
 class TextClassificationDataset(Dataset):
     def __init__(self, texts, labels, tokenizer, max_length=512):
@@ -33,7 +33,7 @@ class TextClassificationDataset(Dataset):
         )
 
         try:
-            log.info(f"")
+            log.info(f"Creating encoder...")
             return {
                 'input_ids': encoding['input_ids'].flatten(),
                 'attention_mask': encoding['attention_mask'].flatten(),
