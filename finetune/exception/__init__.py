@@ -1,5 +1,5 @@
 import sys
-from bert.src.logger import logging
+from finetune.logger import logging
 
 def error_message_detail(error: Exception, error_details: sys):
     _, _, exc_tb = error_details.exc_info()
