@@ -13,7 +13,10 @@ from sklearn.metrics import accuracy_score, classification_report, f1_score
 import numpy as np
 from tqdm import tqdm
 from torch.optim import AdamW # Adam Optimizer with Weight Decay
-from .text_classification import TextClassificationDataset
+
+from finetune.classification.src.text_classification import TextClassificationDataset
+from finetune.logger import logging as log
+from finetune.exception import ProjectException
 
 class BERTTextClassifier:
     def __init__(self, model_name='bert-base-uncased', num_classes=2, max_length=512):
@@ -36,7 +39,7 @@ class BERTTextClassifier:
 
 
     def load_imdb_data(self, sample_size=5000):
-        print("Loading IMDB dataset ...")
+        log.info("Loading IMDB dataset ...")
 
         dataset = load_dataset("imdb")
 
@@ -67,6 +70,7 @@ class BERTTextClassifier:
 
 
     def train(self, train_texts, train_labels, epochs=1, batch_size=8, learning_rate=2e-5) -> None:
+        log.info("Starting training...")
         train_dataset = TextClassificationDataset(
             train_texts, train_labels, self.tokenizer, self.max_length
         ) # get dataset, each get tokenized(truned into token id, attention maske)
@@ -123,6 +127,7 @@ class BERTTextClassifier:
 
 
     def evaluate(self, test_texts, test_labels, batch_size=8):
+        log.info("Evaluation starting...")
 
         test_dataset = TextClassificationDataset(
             test_texts, test_labels, self.tokenizer, self.max_length
@@ -159,6 +164,7 @@ class BERTTextClassifier:
 
 
     def predict(self, texts):
+        log.info("Predicting starting...")
         predictions = [] # what model predict
         probabilities = [] # true values
 

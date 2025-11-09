@@ -1,4 +1,5 @@
-from .bert_classification import BERTTextClassifier
+
+from finetune.classification.src.bert_classification import BERTTextClassifier
 
 def run_text_classification_demo():
 
