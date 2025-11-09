@@ -44,3 +44,5 @@ def run_text_classification_demo():
         confidence = prob[pred] * 100
 
         print(f"'{text[:50]}...' -> {sentiment} ({confidence:.1f}%)")
+
+run_text_classification_demo()
