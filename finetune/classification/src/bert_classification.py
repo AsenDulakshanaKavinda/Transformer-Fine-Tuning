@@ -23,7 +23,7 @@ class BERTTextClassifier:
         self.model_name = model_name
         self.num_classes = num_classes
         self.max_length = max_length
-        self.device = torch.device("cuda" if torch.cuda.isavailable() else "cpu")
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         self.tokenizer = BertTokenizerFast.from_pretrained(         
             model_name
