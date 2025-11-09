@@ -21,7 +21,7 @@ class DataLoader:
         try:
             dataset = load_dataset(dataset_name)
             if use_sample:
-                self._get_sample_dataset
+                return self._get_sample_dataset()
             else:
                 log.info(f"creating sample dataset...")
                 train_texts = dataset['train']['text']

@@ -8,11 +8,6 @@ class BaseTextClassifier(ABC):
         pass
 
     @abstractmethod
-    def get_device(self):
-        """ setting device available """
-        pass
-
-    @abstractmethod
     def train(self):
         pass
 

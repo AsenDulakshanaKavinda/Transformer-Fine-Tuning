@@ -10,7 +10,7 @@ from transformers import get_linear_schedule_with_warmup
 from bert.src.logger import logging as log
 from bert.src.exception import ProjectException
 from bert.src.dataset.text_classification_dataset import TextClassificationDataset
-
+from bert.src.utils.device import Device
 
 
 
@@ -28,7 +28,7 @@ class Train:
 
         log.info(f"loading dataset for train")
         train_dataset = TextClassificationDataset(
-            train_texts, train_texts, self.tokenizer, max_length=5000
+            train_texts, train_labels, self.tokenizer, max_length=5000
         )
         train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True)
 
@@ -43,6 +43,8 @@ class Train:
             optimizer, num_warmup_steps=total_steps//10, num_training_steps=total_steps
         ) # Adjusts learning rate as training progresses
 
+        log.info(f"setting up the device to train")
+        device = Device().get_device()
 
         self.model.train()
 
@@ -54,31 +56,31 @@ class Train:
             for batch in progress_bar: # batch in train_loader
                 optimizer.zero_grad() # clears out previous gradients
 
-            # loading to device
-            input_ids = batch['input_ids'].to(device)
-            attention_mask = batch['attention_mask'].to(device)
-            labels = batch['labels'].to(device)
+                # loading to device
+                input_ids = batch['input_ids'].to(device)
+                attention_mask = batch['attention_mask'].to(device)
+                labels = batch['labels'].to(device)
 
-            # forward pass
-            outputs = self.model(
-                input_ids = input_ids,
-                attention_mask = attention_mask,
-                labels = labels
-            )
+                # forward pass
+                outputs = self.model(
+                    input_ids = input_ids,
+                    attention_mask = attention_mask,
+                    labels = labels
+                )
 
-            loss = outputs.loss
-            total_loss += loss.item()
+                loss = outputs.loss
+                total_loss += loss.item()
 
-            # backward pass
-            loss.backward()
+                # backward pass
+                loss.backward()
 
-            torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0) # This prevents exploding gradients, especially in large models. If any gradient exceeds 1.0, it’s scaled down proportionally.
+                torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0) # This prevents exploding gradients, especially in large models. If any gradient exceeds 1.0, it’s scaled down proportionally.
 
-            optimizer.step() # update model weight - weight = weight - learning_rate * gradient
+                optimizer.step() # update model weight - weight = weight - learning_rate * gradient
 
-            scheduler.step() #
+                scheduler.step() #
 
-            progress_bar.set_postfix({'Loss': f'{loss.item():.4f}'})
+                progress_bar.set_postfix({'Loss': f'{loss.item():.4f}'})
 
         avg_loss = total_loss/len(train_loader)
         print(f'Epoch {epoch+1}, Average Loss: {avg_loss:.4f}')
